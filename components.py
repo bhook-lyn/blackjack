@@ -5,6 +5,8 @@ class Card(object):
         self.suit = suit
         self.value = value
 
+    def __str__(self):
+        return 
 class Deck(object):
     def __init__(self):
         self.deck = []
@@ -17,11 +19,22 @@ class Deck(object):
             for v in values:
                 self.deck.append(Card(s,v))
 
-    def shuffle(self):
-        self
+    def show(self):
 
-class CompPlay(object):
+    def shuffle(self):
+        self.deck
+
+class Hand(object):
+    def 
+"""class CompHand(object):
     def __init__(self):
         self.point = 0
-        self_hand = [] 
+        self.hand 
+        
+    def hit(self):
+
+    def score()
+
+class PlayerHand(object):"""
+    
         
