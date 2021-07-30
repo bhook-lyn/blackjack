@@ -30,7 +30,7 @@ class Deck:
             return dealt 
         
 class Hand:
-    def __init__(self, dealer = False):
+    def __init__(self, dealer = True):
         self.dealer = dealer
         self.cards = []
         self.score = 0 
@@ -56,11 +56,25 @@ class Hand:
         self.calculate_score()
         return self.score
 
-    def display(self):
+"""    def display(self):
         if self.dealer:
-            (self.cards[1]).status
+            for card in self.cards:
+                print(card)
+            print(self.get_score())
+        else:
+            for card in self.cards:
+                print(card)
+            print(self.get_score())"""
+
+class MainLoop:
+    def __init__(self):
+        in_game = True 
+        if in_game:
+            self.deck = Deck()
+            self.deck.shuffle()
+
+            self.player = Hand(dealer = False)
+            self.dealer = Hand()
             
-        
-
-
-    
+if __name__ == "__main__":
+    game = MainLoop()
