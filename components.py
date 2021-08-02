@@ -30,7 +30,7 @@ class Deck:
             return dealt 
         
 class Hand:
-    def __init__(self, dealer = True):
+    def __init__(self, dealer = False):
         self.dealer = dealer
         self.cards = []
         self.score = 0 
@@ -58,9 +58,8 @@ class Hand:
 
 """    def display(self):
         if self.dealer:
-            for card in self.cards:
-                print(card)
-            print(self.get_score())
+            print("hidden")
+            print(self.cards[1])
         else:
             for card in self.cards:
                 print(card)
@@ -69,12 +68,31 @@ class Hand:
 class MainLoop:
     def __init__(self):
         in_game = True 
-        if in_game:
+        while in_game:
             self.deck = Deck()
             self.deck.shuffle()
 
-            self.player = Hand(dealer = False)
-            self.dealer = Hand()
+            self.player = Hand()
+            self.dealer = Hand(dealer = True)
+            
+            self.dealer.add_cards(self.deck.deal())
+            self.player.add_cards(self.deck.deal())
+
+    def check_winner(self):
+        player_score  = self.player.get_score()
+        dealer_score = self.dealer.get_score()
+        has_winner = False 
+        if player_score == 21 or dealer_score == 21:
+            has_winner = True 
+        return 
+"""        player_win = False
+        dealer_win = False 
+        if player_score == 21:
+            player_win = True 
+        
+            """
+
+            
             
 if __name__ == "__main__":
     game = MainLoop()
