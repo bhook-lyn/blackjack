@@ -81,18 +81,21 @@ class MainLoop:
     def check_winner(self):
         player_score  = self.player.get_score()
         dealer_score = self.dealer.get_score()
-        has_winner = False 
+
+        """has_winner = False 
         if player_score == 21 or dealer_score == 21:
             has_winner = True 
-        return 
-"""        player_win = False
+        return player_score """
+        
+        player_win = False
         dealer_win = False 
         if player_score == 21:
             player_win = True 
-        
-            """
+        if dealer_score == 21:
+            
 
+        
             
-            
+
 if __name__ == "__main__":
     game = MainLoop()
