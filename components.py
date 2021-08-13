@@ -22,7 +22,7 @@ class Deck:
     def shuffle(self):
          if len(self.all_cards) > 1:
              random.shuffle(self.all_cards)
-        """randomize using shuffle func from the rand library"""
+             """randomize using shuffle func from the rand library"""
 
     def deal(self):
         if len(self.all_cards) > 1: # as long as there're still cards left
@@ -30,7 +30,10 @@ class Deck:
             return dealt 
         
 class Hand:
-    def __init__(self, dealer = False):
+    def __init__(self, dealer = False): 
+        """default false value for the dealer would mean 
+        that the hand is automatically of player, unless we declare dealer = True
+        https://stackoverflow.com/questions/2681243/how-should-i-declare-default-values-for-instance-variables-in-python"""
         self.dealer = dealer
         self.cards = []
         self.score = 0 
@@ -63,39 +66,76 @@ class Hand:
         else:
             for card in self.cards:
                 print(card)
-            print(self.get_score())"""
-
+            print(self.get_score())
+"""
 class MainLoop:
     def __init__(self):
         in_game = True 
         while in_game:
-            self.deck = Deck()
-            self.deck.shuffle()
+            self.deck = Deck() #this should create a deck of 52
+            self.deck.shuffle() #shuffle this deck 
 
-            self.player = Hand()
-            self.dealer = Hand(dealer = True)
+            self.player = Hand() # cards for the player 
+            self.dealer = Hand(dealer = True) # cards for the dealer the 
             
-            self.dealer.add_cards(self.deck.deal())
-            self.player.add_cards(self.deck.deal())
+            for i in range (0,2):
+                self.dealer.add_cards(self.deck.deal())
+                self.player.add_cards(self.deck.deal())
 
-    def check_winner(self):
+            #display cards, will do this when implement gui 
+            game_over = False 
+            while not game_over:
+                player_blackjack, dealer_blackjack = self.check_blackjack()
+                if player_blackjack or dealer_blackjack:
+                    game_over = True 
+                    self.show_winner(player_blackjack, dealer_blackjack)
+                    continue 
+                else:
+                    player_choice = input("Hit or Stand? H / S: ")
+                    if player_choice == "H": 
+                        self.player.add_cards(self.deck.deal())
+                        if self.check_game_over():
+                            print("You have lost")
+                            has_won = True 
+                        else:
+                            print("Final Results:")
+                            print("Your hand:", self.player.get_score())
+                            print("Dealer's hand:", self.dealer.get_score())
+
+                            if self.player_hand.get_value() > self.dealer_hand.get_value():
+                                print("You Win!")
+                            else:
+                                print("Dealer Wins!")
+                                has_won = True
+                    #else:
+            
+    def check_game_over(self):
+        return(self.player.get_score() > 21)
+
+    def check_blackjack(self):
         player_score  = self.player.get_score()
         dealer_score = self.dealer.get_score()
-
-        """has_winner = False 
-        if player_score == 21 or dealer_score == 21:
-            has_winner = True 
-        return player_score """
-        
         player_win = False
         dealer_win = False 
         if player_score == 21:
             player_win = True 
         if dealer_score == 21:
-            
-
-        
-            
+            dealer_win = True
+        return player_win, dealer_win
+    
+    def show_winner(self, player_blackjack, dealer_blackjack):
+        if player_blackjack:
+            print("BLACKJACK! PLAYER WON!")
+        elif dealer_blackjack:
+            print("BLACKJACK! DEALER WON!")
+        elif dealer_blackjack or player_blackjack:
+            print("IT'S A TIE. BOTH HAS BLACKJACK!")
+    
 
 if __name__ == "__main__":
     game = MainLoop()
+
+"""    keep_playing = True
+    while keep_playing:
+        game.__init__()
+        keep_playing = input('continue?')"""
