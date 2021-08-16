@@ -68,7 +68,7 @@ class Hand:
                 print(card)
             print(self.get_score())
 """
-class MainLoop:
+class GameLoop:
     def __init__(self):
         in_game = True 
         while in_game:
@@ -90,24 +90,32 @@ class MainLoop:
                     game_over = True 
                     self.show_winner(player_blackjack, dealer_blackjack)
                     continue 
-                else:
-                    player_choice = input("Hit or Stand? H / S: ")
-                    if player_choice == "H": 
-                        self.player.add_cards(self.deck.deal())
-                        if self.check_game_over():
-                            print("You have lost")
-                            has_won = True 
-                        else:
-                            print("Final Results:")
-                            print("Your hand:", self.player.get_score())
-                            print("Dealer's hand:", self.dealer.get_score())
+            
+                player_choice = input("Hit or Stand? H / S: ")
 
-                            if self.player_hand.get_value() > self.dealer_hand.get_value():
-                                print("You Win!")
-                            else:
-                                print("Dealer Wins!")
-                                has_won = True
-                    #else:
+                if player_choice == "H": 
+                    self.player.add_cards(self.deck.deal())
+                    
+                    if self.check_game_over():
+                        print("You have lost")
+                        has_won = True 
+                    else:
+                        print("Final Results:")
+                        print("Your hand:", self.player.get_score())
+                        print("Dealer's hand:", self.dealer.get_score())
+
+                        if self.player.get_score() > self.dealer.get_score():
+                            print("You Win!")
+                        else:
+                            print("Dealer Wins!")
+                            has_won = True
+
+            again = input("Play Again? [Y/N] ")
+            while again.lower() not in ["y", "n"]:
+                again = input("Please enter Y or N ")
+                if again.lower() == "n":
+                    print("Thanks for playing!")
+                    in_game = False 
             
     def check_game_over(self):
         return(self.player.get_score() > 21)
@@ -133,7 +141,7 @@ class MainLoop:
     
 
 if __name__ == "__main__":
-    game = MainLoop()
+    game = GameLoop()
 
 """    keep_playing = True
     while keep_playing:
