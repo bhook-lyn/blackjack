@@ -12,9 +12,13 @@ class Card:
     def __str__(self):
         return " of ".join(self.value, self.suit)
 
+    def get_file(self):
+        self.card_image = tk.PhotoImage(file = assets_folder + "/" + str(self.suit) + str(self.value) + ".png")
+        return self.card_image
+
     @classmethod
     def back_file(cls):
-        cls.back = tk.PhotoImage(file=assets_folder + "/back.png")
+        cls.back = tk.PhotoImage(file = assets_folder + "/back.png")
         """a PhotoImage object will be garbage collected if no reference is kept
         so I assign the photoimage to back attribute of the card instance. 
         - Yourself 17/08"""
@@ -22,7 +26,7 @@ class Card:
 
 class Deck:
     def __init__(self):
-        suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
+        suits = ["spades", "hearts", "clubs", "diamonds"]
         values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "J", "Q", "K"]
         """we'll take the face value of the card and then assigned blackjack 
         point for cards later in each hand"""
@@ -206,11 +210,13 @@ class Screen(tk.Tk):
         """we need a default argument to confirm its dealer's first card 
         so we can hide it until dealer choose to stand  """
         """ default we shouldn't have a table_state as well """
-        
+        if not table_state:
+            table_state = self.game_state.get_state()
+
         self.game_screen.delete("all")
         self.table_top_image = tk.PhotoImage(file = assets_folder + "/tabletop.png")
 
         self.game_screen.create_image((400,250), image = self.table_top_image)
         # we want them at center of our canvas which is 800x500
-        
+
 
