@@ -13,8 +13,8 @@ class Card:
         return " of ".join(self.value, self.suit)
 
     def get_file(self):
-        self.card_image = tk.PhotoImage(file = assets_folder + "/" + str(self.suit) + str(self.value) + ".png")
-        return self.card_image
+        card_front_image = tk.PhotoImage(file = assets_folder + "/" + str(self.suit) + str(self.value) + ".png")
+        return card_front_image
 
     @classmethod
     def back_file(cls):
@@ -212,11 +212,37 @@ class Screen(tk.Tk):
         """ default we shouldn't have a table_state as well """
         if not table_state:
             table_state = self.game_state.get_state()
+        
+        player_card_images = [card.get_file() for card in table_state['player cards']]
+        dealer_card_images = [card.get_file() for card in table_state['dealer cards']]
+        
+        if dealer_first and not table_state['blackjack']:
+            dealer_card_images[0] = Card.back_file()
 
         self.game_screen.delete("all")
         self.table_top_image = tk.PhotoImage(file = assets_folder + "/tabletop.png")
 
         self.game_screen.create_image((400,250), image = self.table_top_image)
         # we want them at center of our canvas which is 800x500
+        
+        for card_number,card_image in enumerate(player_card_images):
+            self.game_screen.create_image(
+                (self.card_original_position + (self.card_width_offset * card_number), self.player_card_height),
+                image = card_image)
 
+        for card_number, card_image in enumerate(dealer_card_images):
+            self.game_screen.create_image(
+                (self.card_original_position +(self.card_width_offset * card_number), self.dealer_card_height),
+                image = card_image)
 
+    def hit(self):
+        self.game_state.hit()
+        self.display_table()
+
+    def stick(self):
+        table_state = self.game_state.get_final_state()
+        self.display_table(False, table_state)
+    
+if __name__ == "__main__":
+    game = Screen()
+    game.mainloop()
