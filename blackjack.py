@@ -202,8 +202,15 @@ class Screen(tk.Tk):
         self.display_table()
         #draw all elements from this method
 
-        def display_table(self, dealer_first = True, table_state = None):
-            "we need a default argument to confirm its dealer's first card so we can hide it "
-            "we"
+    def display_table(self, dealer_first = True, table_state = None):
+        """we need a default argument to confirm its dealer's first card 
+        so we can hide it until dealer choose to stand  """
+        """ default we shouldn't have a table_state as well """
+        
+        self.game_screen.delete("all")
+        self.table_top_image = tk.PhotoImage(file = assets_folder + "/tabletop.png")
 
+        self.game_screen.create_image((400,250), image = self.table_top_image)
+        # we want them at center of our canvas which is 800x500
+        
 
