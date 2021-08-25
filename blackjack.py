@@ -70,3 +70,140 @@ class Hand:
     def get_score(self):
         self.calculate_score()
         return self.score
+
+class State:
+    def __init__(self):
+        self.deck = Deck()
+        self.deck.shuffle()
+
+        self.player = Hand()
+        self.dealer = Hand(dealer = True)
+
+        for i in range(2):
+            self.player.add_cards(self.deck.deal())
+            self.dealer.add_cards(self.deck.deal())
+        
+        self.winner = ''
+
+    def check_game_over(self):
+        return(self.player.get_score() > 21)
+
+    def check_blackjack(self):
+        player_score  = self.player.get_score()
+        dealer_score = self.dealer.get_score()
+        player_win = False
+        dealer_win = False 
+        if player_score == 21:
+            player_win = True 
+        if dealer_score == 21:
+            dealer_win = True
+
+        if player_win or dealer_win:
+            return 'dp'
+        elif player_win:
+            return 'p'
+        elif dealer_win:
+            return 'd'
+
+        return False 
+
+    def hit(self):
+        self.player.add_cards(self.deck.deal())
+        if self.check_blackjack() == 'p':
+            self.winner = 'p'
+        if self.check_game_over() == True:
+            self.winner = 'd'
+        return self.winner 
+
+    def get_state(self):
+        has_blackjack = False 
+        winner = self.winner
+        if not winner:
+            winner = self.check_blackjack()
+            if winner:
+                has_blackjack == True
+
+        game_state = {'blackjack': has_blackjack,
+                            'winner': winner,
+                            'dealer cards': self.dealer.cards,
+                            'player cards': self.player.cards}
+
+        return game_state
+    
+    def get_final_state(self):
+        player_score = self.player.get_score()
+        dealer_score = self.dealer.get_score()
+
+        if player_score == dealer_score:
+            winner = 'dp'
+        elif player_score > dealer_score:
+            winner = 'p'
+        elif dealer_score > player_score:
+            winner = 'd'
+
+        final_state = {'winner': winner,
+                        'dealer cards': self.dealer.cards,
+                        'player cards': self.player.cards}
+
+        return final_state
+    
+    def get_player_score(self):
+        return "Score: " + str(self.player.get_score())
+
+class Screen(tk.Tk):
+    """because I wanted to make the blackjack table the main window,
+    class will inherit the Tk widget class from tkinter """
+
+    def __init__(self):
+        super().__init__()
+        self.title("BLACKJACK")
+        self.geometry("800x640")
+        self.resizable(False, False)
+
+        self.card_original_position = 100
+        self.card_width_offset = 100
+
+        self.player_card_height = 300
+        self.dealer_card_height = 100
+        
+        self.player_score_text_coords = (400,450)
+        self.winner_text_coords = (400,250)
+
+        self.game_state = State()
+
+        self.game_screen = tk.Canvas(self, bg = 'white', width = 800, height = 500)
+        # This canvas widget is our top level frame and main window
+
+        self.bottom_frame = tk.Frame(self, width = 800, height = 140, bg = 'red')
+        self.bottom_frame.pack_propagate(0)
+
+        self.hit_button = tk.Button(self.bottom_frame, 
+                                    text = "Hit", width = 30, 
+                                    command = self.hit)
+        self.stand_button = tk.Button(self.bottom_frame, 
+                                    text = "Stand", width = 30, 
+                                    command = self.stand)
+
+        self.play_again_button = tk.Button(self.bottom_frame, 
+                                            text = "Play Again", width = 30,
+                                             command = self.play_again)
+        self.quit_button = tk.Button(self.bottom_frame,
+                                    text = "Quit", width = 30, 
+                                    command = self.quit)
+                            
+        self.hit_button.pack(side = tk.LEFT, padx = (100,200))
+        self.stand_button.pack(side = tk.LEFT)
+
+        self.bottom_frame.pack(side = tk.BOTTOM, fill =tk.X)
+        #fill along the x axis 
+        self.game_screen.pack(side = tk.LEFT, anchor = tk.N)
+        # our blackjack table is a Canvas widget and we draw in it, we need it to start at the very top 
+
+        self.display_table()
+        #draw all elements from this method
+
+        def display_table(self, dealer_first = True, table_state = None):
+            "we need a default argument to confirm its dealer's first card so we can hide it "
+            "we"
+
+
