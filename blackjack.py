@@ -87,7 +87,7 @@ class State:
             self.player.add_cards(self.deck.deal())
             self.dealer.add_cards(self.deck.deal())
         
-        self.winner = ''
+        self.has_winner = ''
 
     def check_game_over(self):
         return(self.player.get_score() > 21)
@@ -114,21 +114,21 @@ class State:
     def hit(self):
         self.player.add_cards(self.deck.deal())
         if self.check_blackjack() == 'p':
-            self.winner = 'p'
+            self.has_winner = 'p'
         if self.check_game_over() == True:
-            self.winner = 'd'
-        return self.winner 
+            self.has_winner = 'd'
+        return self.has_winner 
 
     def get_state(self):
         has_blackjack = False 
-        winner = self.winner
+        winner = self.has_winner
         if not winner:
             winner = self.check_blackjack()
             if winner:
                 has_blackjack == True
 
         game_state = {'blackjack': has_blackjack,
-                            'winner': winner,
+                            'has_winner': winner,
                             'dealer cards': self.dealer.cards,
                             'player cards': self.player.cards}
 
@@ -145,7 +145,7 @@ class State:
         elif dealer_score > player_score:
             winner = 'd'
 
-        final_state = {'winner': winner,
+        final_state = {'has_winner': winner,
                         'dealer cards': self.dealer.cards,
                         'player cards': self.player.cards}
 
@@ -193,7 +193,7 @@ class Screen(tk.Tk):
                                              command = self.play_again)
         self.quit_button = tk.Button(self.bottom_frame,
                                     text = "Quit", width = 30, 
-                                    command = self.quit)
+                                    command = self.destroy)
                             
         self.hit_button.pack(side = tk.LEFT, padx = (100,200))
         self.stand_button.pack(side = tk.LEFT)
@@ -205,6 +205,7 @@ class Screen(tk.Tk):
 
         self.display_table()
         #draw all elements from this method
+
 
     def display_table(self, dealer_first = True, table_state = None):
         """we need a default argument to confirm its dealer's first card 
@@ -225,7 +226,7 @@ class Screen(tk.Tk):
         self.game_screen.create_image((400,250), image = self.table_top_image)
         # we want them at center of our canvas which is 800x500
         
-        for card_number,card_image in enumerate(player_card_images):
+        for card_number, card_image in enumerate(player_card_images):
             self.game_screen.create_image(
                 (self.card_original_position + (self.card_width_offset * card_number), self.player_card_height),
                 image = card_image)
@@ -235,14 +236,48 @@ class Screen(tk.Tk):
                 (self.card_original_position +(self.card_width_offset * card_number), self.dealer_card_height),
                 image = card_image)
 
+        self.game_screen.create_text(
+            self.player_score_text_coords, 
+            text = self.game_state.get_player_score(), font = (None, 20))
+
+        if table_state['has_winner']:
+            if table_state['has_winner'] == 'p':
+                self.game_screen.create_text(self.winner_text_coords, text = "YOU WIN", font = (None, 50))
+            elif table_state['has_winner'] == 'dp':
+                self.game_screen.create_text(self.winner_text_coords, text = "TIE", font = (None, 50))
+            else:
+                self.game_screen.create_text(self.winner_text_coords, text = "DEALER WIN", font = (None, 50))
+
+            self.quit_or_play_again()
+    
+    def quit_or_play_again(self):
+        self.hit_button.pack_forget()
+        self.stand_button.pack_forget()
+
+        self.play_again_button.pack(side = tk.LEFT, padx = (100, 200))
+        self.quit_button.pack(side = tk.LEFT)
+
     def hit(self):
         self.game_state.hit()
         self.display_table()
 
-    def stick(self):
+    def stand(self):
         table_state = self.game_state.get_final_state()
         self.display_table(False, table_state)
     
+    def play_again(self):
+        self.show_playing_buttons()
+        self.game_state = State()
+        self.display_table()
+    
+    def show_playing_buttons(self):
+        self.play_again_button.pack_forget()
+        self.quit_button.pack_forget()
+
+        self.hit_button.pack(side = tk.LEFT, padx = (100,200))
+        self.stand_button.pack(side = tk.LEFT)
+
+
 if __name__ == "__main__":
     game = Screen()
     game.mainloop()
