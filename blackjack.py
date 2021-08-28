@@ -5,12 +5,12 @@ import tkinter as tk
 assets_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'assets/'))
 
 class Card:
-    def __init__(self, value, suit):
+    def __init__(self, suit, value):
         self.suit = suit
         self.value = value
 
-    def __str__(self):
-        return " of ".join(self.value, self.suit)
+    """def __str__(self):
+        return " of ".join(self.value, self.suit)"""
 
     def get_file(self):
         card_front_image = tk.PhotoImage(file = assets_folder + "/" + str(self.suit) + str(self.value) + ".png")
